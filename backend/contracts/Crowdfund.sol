@@ -30,7 +30,7 @@ contract Crowdfund {
         uint256 _minimumContrib,
         uint256 _target,
         uint256 _deadline,
-        State _state,
+        string memory _state,
         uint256 _noContributors) public {
         
         uint256 _id = projects.length;

@@ -17,7 +17,7 @@ struct details {
     uint256 targetContribution;
     uint256 deadline;
     uint256 id;
-    State state;
+    string state;
     uint256 currentDonations;
     uint256 noContributors;
 }
@@ -31,7 +31,7 @@ contract Project {
     uint256 targetContribution;
     uint256 deadline;
     uint256 id;
-    State state;
+    string state;
     uint256 currentDonations;
     uint256 noContributors;
 
@@ -43,7 +43,7 @@ contract Project {
         uint256 _target,
         uint256 _deadline,
         uint256 _id,
-        State _state,
+        string memory _state,
         uint256 _noContributors
     ) {
         ProjectTitle = _title;
@@ -95,7 +95,7 @@ contract Project {
         uint256 _target,
         uint256 _deadline,
         uint256 _id,
-        State _state,
+        string memory _state,
         uint256 _noContributors
     ) public {
         ProjectTitle = _title;
@@ -114,7 +114,7 @@ contract Project {
     event Contributed();
 
     function contribute() public payable {
-        require(msg.value >= minimumContribution, "Amount too low!");
+        // require(msg.value >= minimumContribution, "Amount too low    !");
 
         // check whether the contribution period has expired or not!
         currentDonations += msg.value;
