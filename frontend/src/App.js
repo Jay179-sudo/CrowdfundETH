@@ -10,7 +10,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min";
 
 const App = () => {
   const [currentAccount, setCurrentAccount] = useState("");
-  const contractAddress = "0x8ee521886E840b65542C0E7cF684232eaAf9E255";
+  const contractAddress = "0xaA56cbD139806837A9ed7fC64B8f39a5266D25ec";
   const contractABI = abi.abi;
   const [projectList, setProjectList] = useState([]);
 
@@ -81,7 +81,7 @@ const App = () => {
         const signer = provider.getSigner();
         const crowdFundContract = new ethers.Contract(contractAddress, contractABI, signer);
         const temp = await crowdFundContract.returnProjects();
-
+        console.log(temp);
         setProjectList(temp);
         // return  temp;
 
@@ -105,8 +105,7 @@ const App = () => {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
         const crowdFundContract = new ethers.Contract(contractAddress, contractABI, signer);
-        console.log(crowdFundContract);
-        let waveTxn = await crowdFundContract.addProject(projectName, projectDes, currentAccount, (minimumContrib), targetContrib, temp, "asd", temp, {gasLimit: 31000});
+        let waveTxn = await crowdFundContract.addProject(projectName, projectDes, currentAccount,parseInt(minimumContrib), parseInt(targetContrib), parseInt(temp), "asd", parseInt(temp));
         console.log("Mining...", waveTxn.hash);
         await waveTxn.wait();
         console.log("Mined -- ", waveTxn.hash);
@@ -169,15 +168,15 @@ const App = () => {
 
         {projectList.map(project => (
           <div className={"w-100"}>
-            <div class="card" style={"width: 18rem;"}>
+            <div class="card">
               <div class="card-body">
-                <h5 class="card-title">Card title</h5>
+                <h5 class="card-title">{project}</h5>
                 <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
 
               </div>
             </div>
           </div>
-
+         
         ))}
 
       </div>

@@ -36,26 +36,26 @@ contract Project {
     uint256 noContributors;
 
     constructor(
-        string memory _title,
-        string memory _des,
-        address payable _owner,
-        uint256 _minimumContrib,
-        uint256 _target,
-        uint256 _deadline,
-        uint256 _id,
-        string memory _state,
-        uint256 _noContributors
+        // string memory _title,
+        // string memory _des,
+        // address payable _owner,
+        // uint256 _minimumContrib,
+        // uint256 _target,
+        // uint256 _deadline,
+        // uint256 _id,
+        // string memory _state,
+        // uint256 _noContributors
     ) {
-        ProjectTitle = _title;
-        description = _des;
-        owner = _owner;
-        minimumContribution = _minimumContrib;
-        targetContribution = _target;
-        deadline = _deadline;
-        id = _id;
-        state = _state;
-        currentDonations = 0;
-        noContributors = _noContributors;
+        // ProjectTitle = _title;
+        // description = _des;
+        // owner = _owner;
+        // minimumContribution = _minimumContrib;
+        // targetContribution = _target;
+        // deadline = _deadline;
+        // id = _id;
+        // state = _state;
+        // currentDonations = 0;
+        // noContributors = _noContributors;
     }
 
     // modifier
@@ -97,7 +97,7 @@ contract Project {
         uint256 _id,
         string memory _state,
         uint256 _noContributors
-    ) public {
+    ) external {
         ProjectTitle = _title;
         description = _des;
         owner = _owner;

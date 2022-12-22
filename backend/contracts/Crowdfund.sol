@@ -12,10 +12,12 @@ contract Crowdfund {
     // a contributor can have only one active Project
 
     address public owner;
+    address public contractAddress;
 
-    constructor() {
+    constructor(address _contractAddress) {
         owner = msg.sender;
-        console.log("Crowdfund contract");
+        
+        contractAddress = _contractAddress;
     }
 
     function returnProjects() public view returns(Project[] memory)
@@ -34,7 +36,7 @@ contract Crowdfund {
         uint256 _noContributors) public {
         
         uint256 _id = projects.length;
-        Project pr = Project(_owner);
+        Project pr = Project(contractAddress);
         pr.setDetail(_title, _des, _owner, _minimumContrib, _target, _deadline, _id, _state, _noContributors);
         projects.push(pr);
     }

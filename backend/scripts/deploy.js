@@ -8,10 +8,16 @@ const { ethers } = require("hardhat");
 const hre = require("hardhat");
 
 const main = async () =>{
+  const ProjectFactory = await hre.ethers.getContractFactory("Project");
+  const ProjectFactoryContract = await ProjectFactory.deploy();
+  await ProjectFactoryContract.deployed();
+  console.log("Contract deployed to: ", ProjectFactoryContract.address);
+
   const CrowdfundFactory = await hre.ethers.getContractFactory("Crowdfund");
-  const CrowdfundContract = await CrowdfundFactory.deploy();
+  const CrowdfundContract = await CrowdfundFactory.deploy((ProjectFactoryContract.address));
   await CrowdfundContract.deployed();
   console.log("Contract deployed to: ", CrowdfundContract.address);
+
 }
 
 const runMain = async() =>{
