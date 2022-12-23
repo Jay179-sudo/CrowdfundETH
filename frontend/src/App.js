@@ -10,7 +10,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min";
 
 const App = () => {
   const [currentAccount, setCurrentAccount] = useState("");
-  const contractAddress = "0xaA56cbD139806837A9ed7fC64B8f39a5266D25ec";
+  const contractAddress = "0x52Ae1c137243F4208734f5Aa4dc9d79C30F9820b";
   const contractABI = abi.abi;
   const [projectList, setProjectList] = useState([]);
 
@@ -20,9 +20,31 @@ const App = () => {
   const [projectDes, setProjectDes] = useState("");
   const [minimumContrib, setminimumContrib] = useState(0);
   const [targetContrib, settargetContrib] = useState(0);
+  const [ethContribution, setethContribution] = useState(0);
 
 
 
+  const contribute = async(ethContribution, sender, id) =>{
+    try {
+      const { ethereum } = window;
+
+      if (ethereum) {
+
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const crowdFundContract = new ethers.Contract(contractAddress, contractABI, signer);
+        const temp = await crowdFundContract.contribute(id, contractAddress, {value: ethers.utils.parseEther(ethContribution)});
+        console.log(temp);
+        setProjectList(temp);
+        // return  temp;
+
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
   const checkIfWalletIsConnected = async () => {
     try {
       const { ethereum } = window;
@@ -99,13 +121,13 @@ const App = () => {
       const { ethereum } = window;
 
       if (ethereum) {
-      
+
         // calling the contract!
         let temp = 1
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
         const crowdFundContract = new ethers.Contract(contractAddress, contractABI, signer);
-        let waveTxn = await crowdFundContract.addProject(projectName, projectDes, currentAccount,parseInt(minimumContrib), parseInt(targetContrib), parseInt(temp), "asd", parseInt(temp));
+        let waveTxn = await crowdFundContract.addProject(projectName, projectDes, currentAccount, parseInt(minimumContrib), parseInt(targetContrib), parseInt(temp), "asd", parseInt(temp));
         console.log("Mining...", waveTxn.hash);
         await waveTxn.wait();
         console.log("Mined -- ", waveTxn.hash);
@@ -168,15 +190,31 @@ const App = () => {
 
         {projectList.map(project => (
           <div className={"w-100"}>
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">{project}</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <div className={"card"}>
+              <div className={"card-body"}>
+                <h5 className={"card-title"}>{Number(project[6])}. <span> </span> 
+                 { project[0]}</h5>
+                <p className={"card-text"}>Description: {project[1]}</p>
+                <p className={"card-text"}>Minimum Contribution: {Number(project[3])} eth</p>
+                <p className={"card-text"}>Target Contribution: {Number(project[4])} eth</p>
+                <form onSubmit={e => {
+                      e.preventDefault();
+                      console.log("oie ", project);
+                    contribute((e.target[0].value), String(currentAccount), Number(project[6]));
+                  }}>
+                  <label className="d-block">
+                    Contribution amount :
+                    <input type="text" name="ethContrib" className={"ms-2"} onChange={(e) => setethContribution(e.target.value)} />
+                    <button className={"btn"} >Click this button to contribute! </button>
+                  </label>
 
+                  
+                </form>
               </div>
+
             </div>
           </div>
-         
+
         ))}
 
       </div>
