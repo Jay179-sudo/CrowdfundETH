@@ -79,9 +79,10 @@ contract Crowdfund {
     }
 
     event Contributed();
+    event Extract();
     receive() external payable{}
     function contribute(uint256 id, address payable _to) public payable {
-        // require(msg.value >= minimumContribution, "Amount too low    !");
+        require(msg.value >= projects[id].minimumContribution, "Amount too low!");
 
         (bool sent, ) = _to.call{value: msg.value}("");
         require(sent, "Failed to send Ether");
@@ -90,6 +91,16 @@ contract Crowdfund {
         projects[id].noContributors += 1;
         emit Contributed();
         // check whether the task was completed or not!
+    }
+
+    function extract(uint256 id) public payable{
+        require(projects[id].currentDonations > projects[id].minimumContribution, "Amount not enough ");
+        (bool sent, ) = projects[id].owner.call{value: projects[id].currentDonations}("");
+        require(sent, "Failed to sent Ether");
+
+        projects[id].targetContribution -= projects[id].currentDonations;
+        projects[id].currentDonations = 0;
+        emit Extract();
     }
     
 }

@@ -10,7 +10,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min";
 
 const App = () => {
   const [currentAccount, setCurrentAccount] = useState("");
-  const contractAddress = "0x52Ae1c137243F4208734f5Aa4dc9d79C30F9820b";
+  const contractAddress = "0x0510F64e9Cf095812774d9E8E1b106B9d1131c5C";
   const contractABI = abi.abi;
   const [projectList, setProjectList] = useState([]);
 
@@ -24,7 +24,7 @@ const App = () => {
 
 
 
-  const contribute = async(ethContribution, sender, id) =>{
+  const contribute = async (ethContribution, sender, id) => {
     try {
       const { ethereum } = window;
 
@@ -33,11 +33,33 @@ const App = () => {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
         const crowdFundContract = new ethers.Contract(contractAddress, contractABI, signer);
-        const temp = await crowdFundContract.contribute(id, contractAddress, {value: ethers.utils.parseEther(ethContribution)});
+        const temp = await crowdFundContract.contribute(id, contractAddress, { value: ethers.utils.parseEther(ethContribution) });
         console.log(temp);
         setProjectList(temp);
         // return  temp;
 
+
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const extract = async (id) => {
+    try {
+      const { ethereum } = window;
+
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const crowdFundContract = new ethers.Contract(contractAddress, contractABI, signer);
+        let waveTxn = await crowdFundContract.extract(id);
+        console.log("Mining...", waveTxn.hash);
+        await waveTxn.wait();
+        console.log("Mined -- ", waveTxn.hash);
+        getProject();
       } else {
         console.log("Ethereum object doesn't exist!");
       }
@@ -132,7 +154,7 @@ const App = () => {
         await waveTxn.wait();
         console.log("Mined -- ", waveTxn.hash);
 
-
+        getProject();
       } else {
         console.log("Ethereum object doesn't exist!");
       }
@@ -192,24 +214,29 @@ const App = () => {
           <div className={"w-100"}>
             <div className={"card"}>
               <div className={"card-body"}>
-                <h5 className={"card-title"}>{Number(project[6])}. <span> </span> 
-                 { project[0]}</h5>
+                <h5 className={"card-title"}>{Number(project[6])}. <span> </span>
+                  {project[0]}</h5>
                 <p className={"card-text"}>Description: {project[1]}</p>
                 <p className={"card-text"}>Minimum Contribution: {Number(project[3])} eth</p>
                 <p className={"card-text"}>Target Contribution: {Number(project[4])} eth</p>
+                <p className={"card-text"}>Amount Contributed: {Number(project[8])/10**18} eth</p>
                 <form onSubmit={e => {
-                      e.preventDefault();
-                      console.log("oie ", project);
-                    contribute((e.target[0].value), String(currentAccount), Number(project[6]));
-                  }}>
+                  e.preventDefault();
+                  console.log("oie ", project);
+                  contribute((e.target[0].value), String(currentAccount), Number(project[6]));
+                }}>
                   <label className="d-block">
                     Contribution amount :
                     <input type="text" name="ethContrib" className={"ms-2"} onChange={(e) => setethContribution(e.target.value)} />
                     <button className={"btn"} >Click this button to contribute! </button>
-                  </label>
 
+                  </label>
                   
                 </form>
+                <button className={"btn"} onClick={e => {
+                    console.log(Number(project[6]));
+                    extract(Number(project[6]));
+                  }}> Extract contributions from the smart contract! </button>
               </div>
 
             </div>
