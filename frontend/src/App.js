@@ -10,7 +10,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min";
 
 const App = () => {
   const [currentAccount, setCurrentAccount] = useState("");
-  const contractAddress = "0x0510F64e9Cf095812774d9E8E1b106B9d1131c5C";
+  const contractAddress = "0x1A8d73fEC36e4D265C3718581A4C6B12dCDF4170";
   const contractABI = abi.abi;
   const [projectList, setProjectList] = useState([]);
 
@@ -33,7 +33,7 @@ const App = () => {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
         const crowdFundContract = new ethers.Contract(contractAddress, contractABI, signer);
-        const temp = await crowdFundContract.contribute(id, contractAddress, { value: ethers.utils.parseEther(ethContribution) });
+        const temp = await crowdFundContract.contribute(id, { value: ethers.utils.parseEther(ethContribution) });
         console.log(temp);
         setProjectList(temp);
         // return  temp;
@@ -55,7 +55,9 @@ const App = () => {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
         const crowdFundContract = new ethers.Contract(contractAddress, contractABI, signer);
-        let waveTxn = await crowdFundContract.extract(id);
+        let waveTxn = await crowdFundContract.extract(id, {
+          gasLimit: 100000,
+        });
         console.log("Mining...", waveTxn.hash);
         await waveTxn.wait();
         console.log("Mined -- ", waveTxn.hash);
@@ -233,10 +235,10 @@ const App = () => {
                   </label>
                   
                 </form>
-                <button className={"btn"} onClick={e => {
+                {/* <button className={"btn"} onClick={e => {
                     console.log(Number(project[6]));
                     extract(Number(project[6]));
-                  }}> Extract contributions from the smart contract! </button>
+                  }}> Extract contributions from the smart contract! </button> */}
               </div>
 
             </div>
